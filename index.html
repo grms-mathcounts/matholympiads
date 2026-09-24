@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gale Ranch MS Math Olympiads</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#14183a;--indigo:#1d2a6b;--sky:#4f7cff;--mint:#22c3a6;--amber:#ffb703;--bg:#f4f7fc;--card:#fff;--muted:#5b6285;--line:#dfe5f3}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+h1,h2,h3{font-family:'Bricolage Grotesque',Inter,sans-serif;line-height:1.1;letter-spacing:-.02em}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--mint),var(--amber));z-index:60}
+header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.88);backdrop-filter:blur(10px);border-bottom:1px solid transparent;transition:.3s}
+header.scrolled{border-color:var(--line);box-shadow:0 6px 24px rgba(20,24,58,.08)}
+.bar{max-width:1100px;margin:auto;padding:14px 24px;display:flex;align-items:center;gap:24px}
+.logo{font-family:'Bricolage Grotesque';font-weight:800;text-decoration:none;font-size:1.15rem;display:flex;align-items:center;gap:10px}
+.logo svg{width:28px;height:28px}
+nav{margin-left:auto;display:flex;gap:6px}
+nav a{text-decoration:none;padding:8px 14px;border-radius:99px;font-weight:500;font-size:.95rem;color:var(--muted);transition:.2s}
+nav a:hover{background:var(--bg);color:var(--ink)}
+nav a.active{background:var(--indigo);color:#fff}
+.btn{display:inline-block;text-decoration:none;font-weight:600;padding:11px 22px;border-radius:99px;background:var(--amber);color:var(--ink);transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(255,183,3,.4)}
+.btn.ghost{background:transparent;border:2px solid rgba(255,255,255,.5);color:#fff}
+.btn.ghost:hover{box-shadow:none;background:rgba(255,255,255,.12)}
+#menu{display:none;margin-left:auto;background:none;border:0;font-size:1.6rem;cursor:pointer}
+main{min-height:80vh}
+.page{display:none}
+.page.on{display:block;animation:pg .5s ease}
+@keyframes pg{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.wrap{max-width:1100px;margin:auto;padding:72px 24px}
+.hero{position:relative;background:radial-gradient(circle at 30% 20%,#2b3d9e,var(--ink) 70%);color:#fff;overflow:hidden}
+#geo{display:block;width:100%;height:min(62vh,520px)}
+.hero-text{position:absolute;inset:auto 0 0 0;padding:0 24px 40px;max-width:1100px;margin:auto;pointer-events:none}
+.hero-text h1{font-size:clamp(2.2rem,6vw,4.4rem);font-weight:800;max-width:14ch}
+.page-head{background:var(--indigo);color:#fff}
+.page-head .wrap{padding:56px 24px}
+.page-head h1{font-size:clamp(2rem,5vw,3.4rem)}
+.page-head p{color:#c9d3ff;max-width:56ch;margin-top:12px}
+h2{font-size:clamp(1.6rem,3.4vw,2.3rem);margin-bottom:16px}
+.lead{font-size:1.15rem;color:var(--muted);max-width:62ch}
+.grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:32px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px;text-decoration:none;transition:transform .25s,box-shadow .25s,border-color .25s}
+a.card:hover{transform:translateY(-5px);box-shadow:0 14px 32px rgba(29,42,107,.14);border-color:var(--sky)}
+.card h3{font-size:1.25rem;margin-bottom:8px}
+.card p{color:var(--muted);font-size:.97rem}
+.tag{display:inline-block;font-weight:600;font-size:.85rem;color:var(--indigo);background:#e6ecff;border-radius:99px;padding:3px 12px;margin-bottom:12px}
+.stats{display:flex;flex-wrap:wrap;gap:16px;margin-top:8px}
+.stat{flex:1 1 150px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px 24px}
+.stat b{display:block;font-family:'Bricolage Grotesque';font-size:2.4rem;color:var(--indigo)}
+.stat span{color:var(--muted);font-size:.92rem}
+.steps{list-style:none;padding:0;margin-top:28px;border-left:3px solid var(--line);margin-left:10px}
+.steps li{position:relative;padding:0 0 30px 32px}
+.steps li::before{content:"";position:absolute;left:-10px;top:6px;width:17px;height:17px;border-radius:50%;background:var(--bg);border:3px solid var(--sky);transition:.4s}
+.steps li.in::before{background:var(--mint);border-color:var(--mint)}
+.steps h3{font-size:1.2rem}
+.steps p{color:var(--muted)}
+.split{display:grid;gap:32px;grid-template-columns:1fr 1fr}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}
+.reveal.in{opacity:1;transform:none}
+/* histogram */
+.chart{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:28px 24px 20px;margin-top:28px}
+.cols{display:flex;align-items:flex-end;gap:10px;height:var(--h);border-bottom:2px solid var(--ink);padding:0 6px;position:relative;background:repeating-linear-gradient(to top,transparent 0 calc(var(--u) - 1px),var(--line) calc(var(--u) - 1px) var(--u))}
+.col{flex:1;display:flex;flex-direction:column-reverse;gap:2px;align-items:stretch;height:100%;justify-content:flex-start}
+.blk{height:calc(var(--u) - 2px);border-radius:5px;background:linear-gradient(135deg,var(--sky),var(--mint));transform:scale(.2,0);transform-origin:bottom;opacity:0;transition:transform .5s cubic-bezier(.2,1.4,.4,1),opacity .3s,filter .2s;position:relative}
+.on-view .blk{transform:none;opacity:1}
+.blk:hover{filter:brightness(1.15) saturate(1.3);z-index:5}
+.blk::after{content:attr(data-tip);position:absolute;bottom:110%;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:.8rem;padding:4px 10px;border-radius:8px;white-space:nowrap;opacity:0;pointer-events:none;transition:.15s}
+.blk:hover::after{opacity:1}
+.blk.top{background:linear-gradient(135deg,var(--amber),#ff8c42)}
+.labels{display:flex;gap:10px;padding:8px 6px 0;font-size:.85rem;color:var(--muted)}
+.labels span{flex:1;text-align:center}
+.axis{text-align:center;margin-top:10px;font-weight:600;font-size:.9rem;color:var(--muted)}
+.note{margin-top:18px;font-size:.9rem;color:var(--muted);background:#fff8e1;border:1px dashed var(--amber);border-radius:12px;padding:12px 16px}
+code{background:#eef1fb;padding:1px 6px;border-radius:5px;font-size:.88em}
+/* about */
+.roles{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-top:28px}
+.role{text-align:center}
+.avatar{width:84px;height:84px;border-radius:50%;margin:0 auto 14px;display:grid;place-items:center;font-family:'Bricolage Grotesque';font-weight:800;font-size:1.9rem;color:#fff;background:linear-gradient(135deg,var(--sky),var(--mint))}
+.role small{color:var(--sky);font-weight:600}
+.vision{background:var(--ink);color:#fff;border-radius:26px;padding:44px;margin-top:56px}
+.vision p{font-family:'Bricolage Grotesque';font-size:clamp(1.3rem,2.6vw,1.9rem);line-height:1.35;max-width:32ch}
+footer{background:var(--ink);color:#aab4e6;text-align:center;padding:36px 24px;font-size:.92rem}
+#top{position:fixed;right:22px;bottom:22px;width:46px;height:46px;border-radius:50%;border:0;background:var(--indigo);color:#fff;font-size:1.2rem;cursor:pointer;opacity:0;transform:translateY(20px);transition:.3s;z-index:40}
+#top.show{opacity:1;transform:none}
+@media(max-width:820px){
+ nav{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;flex-direction:column;padding:12px 24px;border-bottom:1px solid var(--line)}
+ nav.open{display:flex}
+ #menu{display:block}.bar .btn{display:none}.split{grid-template-columns:1fr}
+ nav .btn{display:inline-block;text-align:center}
+}
+@media(min-width:821px){nav .btn{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal,.blk{opacity:1;transform:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<header id="hdr"><div class="bar">
+  <a class="logo" href="#home"><svg viewBox="0 0 32 32" fill="none" stroke="#1d2a6b" stroke-width="2.4"><polygon points="16,3 29,26 3,26"/><circle cx="16" cy="19" r="6" stroke="#22c3a6"/></svg>Gale Ranch Math Olympiads</a>
+  <nav id="nav">
+    <a href="#home" data-p="home">Home</a>
+    <a href="#tests" data-p="tests">Selection Test</a>
+    <a href="#results" data-p="results">Results</a>
+    <a href="#about" data-p="about">About</a>
+    <a class="btn" href="#" data-portal target="_blank" rel="noopener">Portal</a>
+  </nav>
+  <a class="btn" href="#" data-portal target="_blank" rel="noopener">Portal ↗</a>
+  <button id="menu" aria-label="Menu">☰</button>
+</div></header>
+
+<main>
+<!-- HOME -->
+<section class="page" id="home">
+  <div class="hero">
+    <canvas id="geo" aria-label="Animated rotating geometry: nested polygons inscribed in circles"></canvas>
+    <div class="hero-text"><h1>Where middle school meets mathematical curiosity.</h1></div>
+  </div>
+  <div class="wrap">
+    <div class="split">
+      <div class="reveal">
+        <h2>Welcome to Math Olympiads</h2>
+        <p class="lead">Gale Ranch Middle School's math competition team. We solve puzzles that don't come with formulas, practice together every week, and travel to contests to test what we've learned.</p>
+      </div>
+      <div class="stats reveal">
+        <div class="stat"><b data-count="30">0</b><span>Team members</span></div>
+        <div class="stat"><b data-count="12">0</b><span>Weekly practices</span></div>
+        <div class="stat"><b data-count="4">0</b><span>Contests this year</span></div>
+      </div>
+    </div>
+    <div class="grid">
+      <a class="card reveal" href="#tests"><span class="tag">Join us</span><h3>Selection Test</h3><p>See who can join, when the test is, and how to prepare.</p></a>
+      <a class="card reveal" href="#results"><span class="tag">Scores</span><h3>Competition Results</h3><p>Explore every student's score in our interactive histogram.</p></a>
+      <a class="card reveal" href="#about"><span class="tag">Team</span><h3>About Us</h3><p>Meet the officers and read our vision.</p></a>
+      <a class="card reveal" href="#" data-portal target="_blank" rel="noopener"><span class="tag">Members</span><h3>Open the Portal</h3><p>Sign in for announcements, sign-ups, and practice problems.</p></a>
+    </div>
+  </div>
+</section>
+
+<!-- SELECTION TEST -->
+<section class="page" id="tests">
+  <div class="page-head"><div class="wrap"><h1>Selection Test Information</h1><p>Everything you need to know before you sit down for the test.</p></div></div>
+  <div class="wrap">
+    <div class="grid" style="margin-top:0">
+      <div class="card reveal"><h3>When</h3><p>[Date and time, e.g. Thursday, October 9, 3:30 PM]</p></div>
+      <div class="card reveal"><h3>Where</h3><p>[Room number, e.g. Room 214]</p></div>
+      <div class="card reveal"><h3>Format</h3><p>[e.g. 20 questions, 60 minutes, no calculators]</p></div>
+      <div class="card reveal"><h3>Who can take it</h3><p>[e.g. All 6th–8th graders at Gale Ranch MS]</p></div>
+    </div>
+    <h2 style="margin-top:64px">How selection works</h2>
+    <ol class="steps">
+      <li class="reveal"><h3>Register</h3><p>[Explain how to sign up, e.g. through the portal by a specific date.]</p></li>
+      <li class="reveal"><h3>Prepare</h3><p>[Topics covered: number theory, counting, geometry, algebra. Add practice links here.]</p></li>
+      <li class="reveal"><h3>Take the test</h3><p>[Bring a pencil and eraser. Scratch paper is provided.]</p></li>
+      <li class="reveal"><h3>Get your result</h3><p>[When results are posted and how team spots are decided.]</p></li>
+    </ol>
+    <p style="margin-top:12px"><a class="btn" href="#" data-portal target="_blank" rel="noopener">Register in the portal ↗</a></p>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section class="page" id="results">
+  <div class="page-head"><div class="wrap"><h1>Competition Results</h1><p id="rsub"></p></div></div>
+  <div class="wrap">
+    <div class="stats" id="rstats"></div>
+    <div class="chart reveal" id="chart">
+      <div class="cols" id="cols"></div>
+      <div class="labels" id="labels"></div>
+      <div class="axis">Score range · each block is one student (hover to see who)</div>
+    </div>
+    <div class="note"><b>Editor:</b> to update the histogram, edit the <code>RESULTS</code> list (and <code>COMPETITION</code> settings) in the <code>&lt;script&gt;</code> at the bottom of this file. Add one line per student. The chart rebuilds itself.</div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="page" id="about">
+  <div class="page-head"><div class="wrap"><h1>About Math Olympiads</h1><p>A student-led team at Gale Ranch Middle School.</p></div></div>
+  <div class="wrap">
+    <h2>Meet the officers</h2>
+    <div class="roles" id="roles"></div>
+    <div class="vision reveal">
+      <h2 style="color:var(--amber);font-size:1.1rem">Our vision</h2>
+      <p>Every student can learn to think like a mathematician: curious, patient, and unafraid of hard problems.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>© Gale Ranch Middle School Math Olympiads · Built with π</footer>
+<button id="top" aria-label="Back to top">↑</button>
+
+<script>
+/* ============ EDIT ME ============ */
+const PORTAL_URL = "https://example.com/portal";   // external portal link
+
+const COMPETITION = {
+  name: "Fall Contest",       // shown under the page title
+  maxScore: 30,               // highest possible score
+  binSize: 5                  // width of each score range
+};
+
+// One line per student. Add, remove or change freely.
+const RESULTS = [
+  {name:"Student 1", score:28},{name:"Student 2", score:26},{name:"Student 3", score:25},
+  {name:"Student 4", score:24},{name:"Student 5", score:23},{name:"Student 6", score:22},
+  {name:"Student 7", score:22},{name:"Student 8", score:21},{name:"Student 9", score:20},
+  {name:"Student 10", score:19},{name:"Student 11", score:19},{name:"Student 12", score:18},
+  {name:"Student 13", score:17},{name:"Student 14", score:17},{name:"Student 15", score:16},
+  {name:"Student 16", score:15},{name:"Student 17", score:14},{name:"Student 18", score:14},
+  {name:"Student 19", score:13},{name:"Student 20", score:12},{name:"Student 21", score:11},
+  {name:"Student 22", score:10},{name:"Student 23", score:9},{name:"Student 24", score:8},
+  {name:"Student 25", score:6},{name:"Student 26", score:4}
+];
+
+const OFFICERS = [
+  {role:"President", name:"Your Name Here"},
+  {role:"Vice President", name:"Your Name Here"},
+  {role:"Treasurer", name:"Your Name Here"},
+  {role:"Secretary", name:"Your Name Here"}
+];
+/* ================================= */
+
+const $ = (s, r=document) => r.querySelector(s), $$ = (s, r=document) => [...r.querySelectorAll(s)];
+$$('[data-portal]').forEach(a => a.href = PORTAL_URL);
+
+/* ---- routing ---- */
+function route(){
+  const id = (location.hash || '#home').slice(1);
+  const page = $('#'+id) && $('#'+id).classList.contains('page') ? id : 'home';
+  $$('.page').forEach(p => p.classList.toggle('on', p.id === page));
+  $$('nav a[data-p]').forEach(a => a.classList.toggle('active', a.dataset.p === page));
+  $('#nav').classList.remove('open');
+  window.scrollTo({top:0, behavior:'instant'});
+  document.title = 'Gale Ranch Math Olympiads';
+  setTimeout(observe, 50);
+  if (page === 'results') buildChart();
+}
+addEventListener('hashchange', route);
+$('#menu').onclick = () => $('#nav').classList.toggle('open');
+
+/* ---- scroll effects ---- */
+addEventListener('scroll', () => {
+  const y = scrollY, h = document.documentElement.scrollHeight - innerHeight;
+  $('#progress').style.width = (h > 0 ? y / h * 100 : 0) + '%';
+  $('#hdr').classList.toggle('scrolled', y > 10);
+  $('#top').classList.toggle('show', y > 500);
+  const hero = $('#geo'); if (hero) hero.style.transform = `translateY(${Math.min(y,600)*0.25}px)`;
+}, {passive:true});
+$('#top').onclick = () => scrollTo({top:0, behavior:'smooth'});
+
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  e.target.classList.add('in'); io.unobserve(e.target);
+  if (e.target.dataset.count) countUp(e.target);
+  if (e.target.id === 'chart') e.target.querySelector('.cols').classList.add('on-view');
+}), {threshold:.2});
+function observe(){ $$('.page.on .reveal, .page.on .steps li, .page.on [data-count], #chart').forEach(el => { if(!el.classList.contains('in')) io.observe(el); }); }
+function countUp(el){
+  const to = +el.dataset.count, t0 = performance.now();
+  (function f(t){ const k = Math.min((t-t0)/1200,1); el.textContent = Math.round(to*(1-Math.pow(1-k,3))); if(k<1) requestAnimationFrame(f); })(t0);
+}
+
+/* ---- histogram ---- */
+function buildChart(){
+  const {maxScore, binSize, name} = COMPETITION;
+  const nBins = Math.ceil((maxScore + 1) / binSize);
+  const bins = Array.from({length:nBins}, () => []);
+  RESULTS.forEach(r => bins[Math.min(Math.floor(r.score / binSize), nBins-1)].push(r));
+  bins.forEach(b => b.sort((a,b2) => b2.score - a.score));
+  const tallest = Math.max(1, ...bins.map(b => b.length));
+  const u = tallest > 12 ? 20 : 26;
+  const cols = $('#cols'), chart = $('#chart');
+  cols.style.setProperty('--u', u + 'px'); cols.style.setProperty('--h', (tallest * u + 8) + 'px');
+  cols.classList.remove('on-view'); chart.classList.remove('in');
+  const best = Math.max(...RESULTS.map(r => r.score));
+  cols.innerHTML = bins.map(b => `<div class="col">${b.map((r,i) =>
+    `<div class="blk${r.score===best?' top':''}" style="transition-delay:${(i*50)+Math.random()*200}ms" data-tip="${r.name}: ${r.score}/${maxScore}"></div>`).join('')}</div>`).join('');
+  $('#labels').innerHTML = bins.map((_,i) => {
+    const lo = i*binSize, hi = Math.min(lo+binSize-1, maxScore);
+    return `<span>${lo}–${hi}</span>`; }).join('');
+  const avg = (RESULTS.reduce((s,r) => s + r.score, 0) / RESULTS.length).toFixed(1);
+  $('#rsub').textContent = `${name}: how every student scored.`;
+  $('#rstats').innerHTML = `<div class="stat"><b>${RESULTS.length}</b><span>Students</span></div><div class="stat"><b>${avg}</b><span>Average score</span></div><div class="stat"><b>${best}</b><span>Top score (of ${maxScore})</span></div>`;
+  observe();
+}
+
+/* ---- officers ---- */
+$('#roles').innerHTML = OFFICERS.map(o => `<div class="card role reveal"><div class="avatar">${o.name.trim()[0]||'?'}</div><h3>${o.name}</h3><small>${o.role}</small></div>`).join('');
+
+/* ---- hero geometry animation ---- */
+(function(){
+  const cv = $('#geo'), ctx = cv.getContext('2d');
+  let W, H, dpr;
+  function size(){ dpr = devicePixelRatio||1; W = cv.clientWidth; H = cv.clientHeight; cv.width = W*dpr; cv.height = H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); }
+  addEventListener('resize', size); size();
+  const still = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  function poly(cx, cy, r, n, rot){ const p=[]; for(let i=0;i<n;i++){ const a=rot+i*2*Math.PI/n; p.push([cx+r*Math.cos(a), cy+r*Math.sin(a)]); } return p; }
+  function draw(t){
+    ctx.clearRect(0,0,W,H);
+    const cx = W*0.68 > 420 ? W*0.68 : W/2, cy = H*0.46, R = Math.min(W*0.5, H*0.44);
+    ctx.lineWidth = 1.4;
+    // circumscribing circle + tick marks
+    ctx.strokeStyle = 'rgba(255,255,255,.25)'; ctx.beginPath(); ctx.arc(cx,cy,R,0,7); ctx.stroke();
+    // nested inscribed polygons: each rotates by a small angle inside the last (a pursuit-curve spiral)
+    let pts = poly(cx,cy,R,4,t*0.0002), depth = 34;
+    const k = 0.13 + 0.05*Math.sin(t*0.0004);
+    for(let d=0; d<depth; d++){
+      const hue = 170 + d*4;
+      ctx.strokeStyle = `hsla(${hue},80%,${65 - d*0.7}%,${0.95 - d*0.02})`;
+      ctx.beginPath(); pts.forEach((p,i) => i ? ctx.lineTo(...p) : ctx.moveTo(...p)); ctx.closePath(); ctx.stroke();
+      pts = pts.map((p,i) => { const q = pts[(i+1)%pts.length]; return [p[0]+(q[0]-p[0])*k, p[1]+(q[1]-p[1])*k]; });
+    }
+    // orbiting point tracing a circle, with radius line
+    const a = t*0.0012, px = cx+R*Math.cos(a), py = cy+R*Math.sin(a);
+    ctx.strokeStyle = 'rgba(255,183,3,.7)'; ctx.setLineDash([5,6]); ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(px,py); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = '#ffb703'; ctx.beginPath(); ctx.arc(px,py,6,0,7); ctx.fill();
+    // small triangle inscribed in orbit, rotating the other way
+    const tri = poly(cx,cy,R*0.62,3,-t*0.0006);
+    ctx.strokeStyle = 'rgba(255,183,3,.55)'; ctx.beginPath(); tri.forEach((p,i)=> i?ctx.lineTo(...p):ctx.moveTo(...p)); ctx.closePath(); ctx.stroke();
+    if(!still) requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+})();
+
+route();
+</script>
+</body>
+</html>
