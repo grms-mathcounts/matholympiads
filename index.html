@@ -299,6 +299,9 @@ $('#roles').innerHTML = OFFICERS.map(o => `<div class="card role reveal"><div cl
   const still = matchMedia('(prefers-reduced-motion:reduce)').matches;
   function poly(cx, cy, r, n, rot){ const p=[]; for(let i=0;i<n;i++){ const a=rot+i*2*Math.PI/n; p.push([cx+r*Math.cos(a), cy+r*Math.sin(a)]); } return p; }
   function draw(t){
+    if(still) t = 4000;
+    if(cv.clientWidth !== W || cv.clientHeight !== H) size();
+    if(!W || !H){ requestAnimationFrame(draw); return; }
     ctx.clearRect(0,0,W,H);
     const cx = W*0.68 > 420 ? W*0.68 : W/2, cy = H*0.46, R = Math.min(W*0.5, H*0.44);
     ctx.lineWidth = 1.4;
@@ -320,7 +323,7 @@ $('#roles').innerHTML = OFFICERS.map(o => `<div class="card role reveal"><div cl
     // small triangle inscribed in orbit, rotating the other way
     const tri = poly(cx,cy,R*0.62,3,-t*0.0006);
     ctx.strokeStyle = 'rgba(255,183,3,.55)'; ctx.beginPath(); tri.forEach((p,i)=> i?ctx.lineTo(...p):ctx.moveTo(...p)); ctx.closePath(); ctx.stroke();
-    if(!still) requestAnimationFrame(draw);
+    requestAnimationFrame(draw);
   }
   requestAnimationFrame(draw);
 })();
