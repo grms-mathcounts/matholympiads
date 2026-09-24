@@ -78,6 +78,14 @@ a.card:hover{transform:translateY(-5px);box-shadow:0 14px 32px rgba(29,42,107,.1
 .note{margin-top:18px;font-size:.9rem;color:var(--muted);background:#fff8e1;border:1px dashed var(--amber);border-radius:12px;padding:12px 16px}
 code{background:#eef1fb;padding:1px 6px;border-radius:5px;font-size:.88em}
 /* about */
+.docs{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));margin-top:24px}
+.doc{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.doc h3{font-size:1.1rem;padding:16px 20px 10px}
+.doc iframe{display:block;width:100%;height:480px;border:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.doc a{display:block;padding:12px 20px;font-weight:600;font-size:.92rem;color:var(--sky);text-decoration:none}
+.doc a:hover{text-decoration:underline}
+.doc .empty{height:200px;display:grid;place-items:center;text-align:center;padding:20px;color:var(--muted);font-size:.92rem;border-top:1px dashed var(--line)}
+/* about */
 .roles{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-top:28px}
 .role{text-align:center}
 .avatar{width:84px;height:84px;border-radius:50%;margin:0 auto 14px;display:grid;place-items:center;font-family:'Bricolage Grotesque';font-weight:800;font-size:1.9rem;color:#fff;background:linear-gradient(135deg,var(--sky),var(--mint))}
@@ -150,6 +158,9 @@ footer{background:var(--ink);color:#aab4e6;text-align:center;padding:36px 24px;f
       <div class="card reveal"><h3>Format</h3><p>[e.g. 20 questions, 60 minutes, no calculators]</p></div>
       <div class="card reveal"><h3>Who can take it</h3><p>[e.g. All 6th–8th graders at Gale Ranch MS]</p></div>
     </div>
+    <h2 style="margin-top:64px">Practice selection tests</h2>
+    <p class="lead reveal">Try a practice test before the real one. These are live Google documents, so they always show the latest version.</p>
+    <div class="docs" id="docs"></div>
     <h2 style="margin-top:64px">How selection works</h2>
     <ol class="steps">
       <li class="reveal"><h3>Register</h3><p>[Explain how to sign up, e.g. through the portal by a specific date.]</p></li>
@@ -213,6 +224,14 @@ const RESULTS = [
   {name:"Student 19", score:13},{name:"Student 20", score:12},{name:"Student 21", score:11},
   {name:"Student 22", score:10},{name:"Student 23", score:9},{name:"Student 24", score:8},
   {name:"Student 25", score:6},{name:"Student 26", score:4}
+];
+
+// Practice tests shown on the Selection Test page. Paste the normal Google share link
+// (Docs, Sheets, Slides, or a Drive PDF). Leave url:"" to show a placeholder.
+// In Google Drive, set sharing to "Anyone with the link" (Viewer) or the embed will be blank.
+const DRIVE_DOCS = [
+  {title:"Practice Test 1", url:""},
+  {title:"Practice Test 2", url:""}
 ];
 
 const OFFICERS = [
@@ -286,6 +305,20 @@ function buildChart(){
   $('#rstats').innerHTML = `<div class="stat"><b>${RESULTS.length}</b><span>Students</span></div><div class="stat"><b>${avg}</b><span>Average score</span></div><div class="stat"><b>${best}</b><span>Top score (of ${maxScore})</span></div>`;
   observe();
 }
+
+/* ---- practice test embeds ---- */
+function embedUrl(u){
+  const m = u.match(/^https:\/\/(docs|drive)\.google\.com\/(document|spreadsheets|presentation|file)\/d\/([\w-]+)/);
+  if(!m) return null;
+  const [, host, kind, id] = m;
+  return `https://${host}.google.com/${kind}/d/${id}/${kind==='presentation' ? 'embed' : 'preview'}`;
+}
+$('#docs').innerHTML = DRIVE_DOCS.map(d => {
+  const src = embedUrl(d.url || '');
+  return `<div class="doc reveal"><h3>${d.title}</h3>` + (src
+    ? `<iframe src="${src}" loading="lazy" title="${d.title}" allowfullscreen></iframe><a href="${d.url}" target="_blank" rel="noopener">Open in Google Drive ↗</a>`
+    : `<div class="empty">Paste a Google Drive link for this test in <code>DRIVE_DOCS</code>.</div>`) + `</div>`;
+}).join('');
 
 /* ---- officers ---- */
 $('#roles').innerHTML = OFFICERS.map(o => `<div class="card role reveal"><div class="avatar">${o.name.trim()[0]||'?'}</div><h3>${o.name}</h3><small>${o.role}</small></div>`).join('');
